@@ -66,6 +66,7 @@ namespace HW1NoteKeeperSolution
             logger.LogInformation("AISettings successfully loaded from configuration.");
 
             builder.Services.AddSingleton(_aiSettings!);
+            builder.Services.AddScoped<IChatService, ChatService>();  //AddScoped means a new instance of ChatService will be created for each HTTP request, and shared within that request. This is a good choice for services that are lightweight and don't maintain state across requests.
 
             // Initialize the OpenAIClient with the settings
             Uri openAIServiceEndpointUri;

@@ -8,11 +8,19 @@ namespace HW1NoteKeeperSolution.Controllers
     [Route("notes")]
     public class NotesController : ControllerBase
     {
-        private static readonly string[] Summaries =
-        [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
+
+        private readonly IChatService _chatService;
+
+        public NotesController(IChatService chatService)
+        {
+            _chatService = chatService;
+        }
+
+
+
         private static readonly Dictionary<string, Note> _note = new Dictionary<string, Note>();
+
+
 
         private const string GetAllNotesRouteName = "GetAllNotes";
         private const string GetNotesRouteName = "GetNoteById";   // For GET by Id
@@ -68,6 +76,8 @@ namespace HW1NoteKeeperSolution.Controllers
 
 
         private const string PatchNoteRouteName = "PatchNoteRouteName";
+
+
 
         [ProducesResponseType(statusCode: StatusCodes.Status204NoContent)]
         [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
@@ -182,6 +192,14 @@ namespace HW1NoteKeeperSolution.Controllers
                 });
             }
 
+            // Generate tags using AI
+
+            // string textForTagging = $"{noteCreate.Summary} {noteCreate.Details}";
+            // List<string> generatedTags = await _chatService.GenerateTagsAsync(textForTagging);
+
+            var tags = _chatService.ProcessMessage($"{noteCreate.Details}").Result; // Call the service to process the message, you can await this if it's an async method
+
+
             // Create note
             Note note = new Note()
             {
@@ -189,7 +207,7 @@ namespace HW1NoteKeeperSolution.Controllers
                 Details = noteCreate.Details,
                 CreatedDateUtc = DateTime.UtcNow,
                 ModifiedDateUtc = null,
-                Tags = null
+                Tags = tags.ToArray()
 
             };
 
