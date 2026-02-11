@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/d51eeed6-15b4-4e8d-aabc-74d33b03dd41/resourceGroups/app-cscie94-notekeeper_group/providers/Microsoft.Web/sites/app-cscie94-notekeeper",
+    "appService.deploySubpath": "HW1NoteKeeperSolution/vscode-publish"
+}

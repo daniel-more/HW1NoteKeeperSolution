@@ -1,0 +1,7 @@
+@HW1NoteKeeperSolution_HostAddress = https://localhost:7184
+
+GET {{HW1NoteKeeperSolution_HostAddress}}/notes/
+Accept: application/json
+
+
+###
