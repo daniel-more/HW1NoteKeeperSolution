@@ -37,6 +37,10 @@ namespace HW1NoteKeeperSolution
             //Bind AISettings to the appsettings.json file
             AISettings? _aiSettings = builder.Configuration.GetSection("AISettings").Get<AISettings>()!;
 
+            var section = builder.Configuration.GetSection("AISettings");
+            Console.WriteLine("OpenAIKey: " + section["OpenAIKey"]);
+
+
 
             ILogger logger = loggerFactory.CreateLogger("Program");
 
@@ -75,7 +79,7 @@ namespace HW1NoteKeeperSolution
             openAIServiceCredential = new AzureKeyCredential(_aiSettings.ApiKey);
 
             // RegisterOpenAIClient(openAIServiceEndpointUri, openAIServiceCredential, builder.Services);
-            RegisterOpenAIClient(builder, openAIServiceEndpointUri, openAIServiceCredential, _aiSettings.DeploymentName);
+            RegisterOpenAIClient(builder, openAIServiceEndpointUri, openAIServiceCredential, _aiSettings.DeploymentModelName);
 
 
 

@@ -42,3 +42,15 @@ private static void RegisterOpenAIClient(WebApplicationBuilder builder,
                 return chatClient.AsIChatClient();
             });
         }, explain this, how does this return an IChatClient, where is it returned, the function that calls it doesn't store anything it seems
+
+
+Create a service for Chat
+
+what shall I change on ChatService.cs and ChatController.cs
+
+dont' forget about Demo02SystemPromptToProvideContext
+
+
+# Adding comments
+add comments to NoteCreate.cs
+add comments to Note.cs
