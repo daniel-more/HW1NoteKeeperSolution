@@ -4,6 +4,11 @@
         <name>HW1NoteKeeperSolution</name>
     </assembly>
     <members>
+        <member name="T:HW1NoteKeeperSolution.Controllers.ChatController.KeyPhrasesResponse">
+            <summary>
+            Response model for key phrases returned by the AI.
+            </summary>
+        </member>
         <member name="M:HW1NoteKeeperSolution.Controllers.ChatController.#ctor(Microsoft.Extensions.AI.IChatClient,HW1NoteKeeperSolution.Settings.AISettings,Microsoft.Extensions.Logging.ILogger{HW1NoteKeeperSolution.Controllers.ChatController},IChatService)">
             <summary>
             Initializes a new instance of the <see cref="T:HW1NoteKeeperSolution.Controllers.ChatController"/> class.
@@ -15,10 +20,10 @@
         </member>
         <member name="M:HW1NoteKeeperSolution.Controllers.ChatController.Post(System.String)">
             <summary>
-            Post a chat message to the AI model and get a response.
+            HTTP POST endpoint to send a chat prompt to the AI model and receive extracted keywords.
             </summary>
             <param name="prompt">The input prompt to send to the AI model.</param>
-            <returns>The response from the AI model as a list of key phrases.</returns>
+            <returns>A list of key phrases extracted from the prompt by the AI model.</returns>
         </member>
         <member name="T:HW1NoteKeeperSolution.Controllers.NotesController">
             <summary>
@@ -408,6 +413,44 @@
             This limits the length of the generated response. Each token is approximately 4 characters.
             Default value is 5500 tokens.
             </remarks>
+        </member>
+        <member name="T:IChatService">
+            <summary>
+            Interface for chat services that process messages and return AI-generated keywords.
+            </summary>
+        </member>
+        <member name="M:IChatService.ProcessMessage(System.String)">
+            <summary>
+            Processes a user message and returns a list of important keywords extracted by AI.
+            </summary>
+            <param name="message">The user input message to analyze.</param>
+            <returns>A list of keywords extracted from the message.</returns>
+        </member>
+        <member name="T:ChatService">
+            <summary>
+            ChatService interacts with an AI model to extract keywords from user input.
+            Uses Azure OpenAI and custom settings for prompt configuration.
+            </summary>
+        </member>
+        <member name="T:ChatService.KeyPhrasesResponse">
+            <summary>
+            Response model for key phrases returned by the AI.
+            </summary>
+        </member>
+        <member name="M:ChatService.#ctor(Microsoft.Extensions.Logging.ILogger{ChatService},Microsoft.Extensions.AI.IChatClient,HW1NoteKeeperSolution.Settings.AISettings)">
+            <summary>
+            Constructs a ChatService with required dependencies.
+            </summary>
+            <param name="logger">Logger for diagnostic output.</param>
+            <param name="chatClient">AI chat client for message processing.</param>
+            <param name="aISettings">Settings for AI prompt configuration.</param>
+        </member>
+        <member name="M:ChatService.ProcessMessage(System.String)">
+            <summary>
+            Sends a user message to the AI model and extracts keywords from the response.
+            </summary>
+            <param name="message">The user input message to analyze.</param>
+            <returns>A list of keywords extracted from the message.</returns>
         </member>
         <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
             <summary>

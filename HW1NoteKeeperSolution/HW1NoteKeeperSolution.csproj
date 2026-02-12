@@ -6,7 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <UserSecretsId>c5b906b8-e9e8-49df-82ee-499ed0d099ad</UserSecretsId>
+    <!-- <NoWarn>1701;1702;1591</NoWarn> -->
   </PropertyGroup>
+        
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />

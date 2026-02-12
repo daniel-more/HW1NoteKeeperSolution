@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Azure.AI.OpenAI;
 using Microsoft.Extensions.AI;
@@ -10,13 +9,14 @@ using NJsonSchema;
 
 
 namespace HW1NoteKeeperSolution.Controllers
-
 {
     [ApiController]
     [Route("[controller]")]
     public class ChatController : ControllerBase
     {
-
+        /// <summary>
+        /// Response model for key phrases returned by the AI.
+        /// </summary>
         public class KeyPhrasesResponse
         {
             public List<string> Phrases { get; set; } = [];
@@ -45,18 +45,18 @@ namespace HW1NoteKeeperSolution.Controllers
             _chatService = chatService ?? throw new ArgumentNullException(nameof(chatService));
         }
 
-
         /// <summary>
-        /// Post a chat message to the AI model and get a response.
+        /// HTTP POST endpoint to send a chat prompt to the AI model and receive extracted keywords.
         /// </summary>
         /// <param name="prompt">The input prompt to send to the AI model.</param>
-        /// <returns>The response from the AI model as a list of key phrases.</returns>
+        /// <returns>A list of key phrases extracted from the prompt by the AI model.</returns>
         [HttpPost(Name = "PostChat")]
         public async Task<List<string>> Post([FromBody] string prompt)
         {
+            // Use the chat service to process the prompt and extract keywords
             var result = await _chatService.ProcessMessage(prompt);
+            // Return the result or an empty list if no keywords were found
             return result ?? [];
         }
-
     }
 }
