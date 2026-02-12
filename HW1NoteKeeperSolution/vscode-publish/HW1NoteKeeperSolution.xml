@@ -4,13 +4,309 @@
         <name>HW1NoteKeeperSolution</name>
     </assembly>
     <members>
+        <member name="M:HW1NoteKeeperSolution.Controllers.ChatController.#ctor(Microsoft.Extensions.AI.IChatClient,HW1NoteKeeperSolution.Settings.AISettings,Microsoft.Extensions.Logging.ILogger{HW1NoteKeeperSolution.Controllers.ChatController},IChatService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:HW1NoteKeeperSolution.Controllers.ChatController"/> class.
+            </summary>
+            <param name="chatClient">The chat client to interact with the AI model.</param>
+            <param name="aISettings">The settings for the AI model.</param>
+            <param name="logger">The logger instance for logging.</param>
+            <param name="chatService">The chat service for processing messages.</param>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Controllers.ChatController.Post(System.String)">
+            <summary>
+            Post a chat message to the AI model and get a response.
+            </summary>
+            <param name="prompt">The input prompt to send to the AI model.</param>
+            <returns>The response from the AI model as a list of key phrases.</returns>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.Controllers.NotesController">
+            <summary>
+            NotesController manages all HTTP endpoints for the Notes API.
+            Provides functionality to create, read, update, and delete notes.
+            Each note can be tagged and categorized using AI-powered tag generation.
+            </summary>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.Controllers.NotesController._chatService">
+            <summary>
+            Service for processing messages and generating tags using AI/Chat capabilities
+            </summary>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Controllers.NotesController.#ctor(IChatService)">
+            <summary>
+            Constructor that initializes the controller with the ChatService dependency
+            </summary>
+            <param name="chatService">The chat service instance for AI-powered tag generation</param>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.Controllers.NotesController._note">
+            <summary>
+            In-memory dictionary storing all notes. Key is the NoteId (GUID), value is the Note object.
+            Note: This data is ephemeral and will be lost when the application stops.
+            In a production environment, this should be replaced with a persistent database.
+            </summary>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.Controllers.NotesController.GetAllNotesRouteName">
+            <summary>
+            Route name constants used for CreatedAtRoute and other URL generation scenarios.
+            These names are referenced when creating links to related resources.
+            </summary>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Controllers.NotesController.GetAWeatherForecastById(System.String)">
+            <summary>
+            HTTP GET endpoint to retrieve a single note by its ID.
+            </summary>
+            <param name="id">The unique identifier (GUID) of the note to retrieve</param>
+            <returns>
+            200 OK: Returns the Note object if found
+            404 Not Found: If the note ID does not exist
+            500 Internal Server Error: If an unexpected error occurs during processing
+            </returns>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.Controllers.NotesController.PatchNoteRouteName">
+            <summary>
+            Route name constant for the PATCH endpoint
+            </summary>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Controllers.NotesController.Patch(System.String,HW1NoteKeeperSolution.NoteUpdate)">
+            <summary>
+            HTTP PATCH endpoint to partially update an existing note.
+            Only the fields provided in the request body are updated; other fields remain unchanged.
+            </summary>
+            <param name="id">The unique identifier (GUID) of the note to update</param>
+            <param name="noteUpdate">The data containing the fields to update (Summary and/or Details)</param>
+            <returns>
+            204 No Content: If the note was successfully updated
+            404 Not Found: If the note ID does not exist
+            400 Bad Request: If validation fails (null/empty ID, Summary, or Details)
+            </returns>
+        </member>
         <member name="M:HW1NoteKeeperSolution.Controllers.NotesController.Post(HW1NoteKeeperSolution.NoteCreate)">
             <summary>
-            Creates a new note entry and adds it to the list of notes
+            HTTP POST endpoint to create a new note.
+            The request body must contain Summary and Details.
+            AI-powered tags are automatically generated based on the note content.
             </summary>
-            <param name="CreateNotes">The weather forecast to ad</param>
-            <response code="201">Indicates the notes added successfully</response>
-            
+            <param name="noteCreate">The note creation request containing Summary and Details</param>
+            <returns>
+            201 Created: Returns the newly created NoteResult with a Location header pointing to the created resource
+            400 Bad Request: If validation fails (null/empty Summary or Details)
+            </returns>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Controllers.NotesController.Delete(System.String)">
+            <summary>
+            HTTP DELETE endpoint to remove a note by its ID.
+            </summary>
+            <param name="id">The unique identifier (GUID) of the note to delete</param>
+            <returns>
+            204 No Content: If the note was successfully deleted
+            404 Not Found: If the note ID does not exist
+            400 Bad Request: If the ID is null or empty
+            </returns>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Controllers.NotesController.GetAllNotes">
+            <summary>
+            HTTP GET endpoint to retrieve all notes.
+            </summary>
+            <returns>
+            200 OK: Returns an array of all NoteResult objects currently stored
+            </returns>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.Note">
+            <summary>
+            Represents a note entity in the system.
+            This class is used to store and retrieve note data from the repository.
+            </summary>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Note.NoteId">
+            <summary>
+            Gets or sets the unique identifier for the note.
+            </summary>
+            <remarks>
+            This is typically a GUID string generated when the note is created.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Note.Summary">
+            <summary>
+            Gets or sets the summary or title of the note.
+            </summary>
+            <remarks>
+            This is a brief heading that describes the note's main topic.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Note.Details">
+            <summary>
+            Gets or sets the detailed content of the note.
+            </summary>
+            <remarks>
+            This contains the full text or body of the note.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Note.CreatedDateUtc">
+            <summary>
+            Gets or sets the date and time when the note was created (in UTC).
+            </summary>
+            <remarks>
+            This value is set automatically when the note is created and should not be modified afterward.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Note.ModifiedDateUtc">
+            <summary>
+            Gets or sets the date and time when the note was last modified (in UTC).
+            </summary>
+            <remarks>
+            This value is null until the note is modified. It is updated each time the note is changed.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Note.Tags">
+            <summary>
+            Gets or sets an array of tags associated with the note.
+            </summary>
+            <remarks>
+            Tags are keywords extracted from the note's summary and details for quick categorization and search.
+            </remarks>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.NoteCreate">
+            <summary>
+            Data Transfer Object (DTO) for creating a new note.
+            This class is used to receive note creation requests from API clients.
+            </summary>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteCreate.Summary">
+            <summary>
+            Gets or sets the summary of the note.
+            </summary>
+            <remarks>
+            This property is required and must be between 1 and 60 characters in length.
+            It provides a brief title or heading for the note.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteCreate.Details">
+            <summary>
+            Gets or sets the detailed content of the note.
+            </summary>
+            <remarks>
+            This property is required and must be between 1 and 1024 characters in length.
+            It contains the full text or body of the note.
+            </remarks>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.NoteResult">
+            <summary>
+            Data Transfer Object (DTO) for returning note data from API endpoints.
+            This class represents the complete note information returned in API responses.
+            </summary>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteResult.NoteId">
+            <summary>
+            Gets or sets the unique identifier for the note.
+            </summary>
+            <remarks>
+            This is a GUID string that uniquely identifies the note in the system.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteResult.Summary">
+            <summary>
+            Gets or sets the summary or title of the note.
+            </summary>
+            <remarks>
+            This is a brief heading that describes the note's main topic.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteResult.Details">
+            <summary>
+            Gets or sets the detailed content of the note.
+            </summary>
+            <remarks>
+            This contains the full text or body of the note.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteResult.CreatedDateUtc">
+            <summary>
+            Gets or sets the date and time when the note was created (in UTC).
+            </summary>
+            <remarks>
+            This is a read-only value set automatically when the note is created.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteResult.ModifiedDateUtc">
+            <summary>
+            Gets or sets the date and time when the note was last modified (in UTC).
+            </summary>
+            <remarks>
+            This value is null if the note has never been modified after creation.
+            It is updated automatically each time the note is changed.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteResult.Tags">
+            <summary>
+            Gets or sets an array of tags associated with the note.
+            </summary>
+            <remarks>
+            Tags are keywords extracted from the note's summary and details using AI processing.
+            They are used for quick categorization and searching.
+            </remarks>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.NoteUpdate">
+            <summary>
+            Data Transfer Object (DTO) for updating an existing note.
+            This class is used to receive note update requests from API clients.
+            </summary>
+            <remarks>
+            Only the Summary and Details fields can be updated.
+            Client-immutable fields like NoteId, CreatedDateUtc, ModifiedDateUtc, and Tags are not included
+            as these are managed by the server.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteUpdate.Summary">
+            <summary>
+            Gets or sets the updated summary of the note.
+            </summary>
+            <remarks>
+            This property updates the brief title or heading of the note.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.NoteUpdate.Details">
+            <summary>
+            Gets or sets the updated detailed content of the note.
+            </summary>
+            <remarks>
+            This property updates the full text or body of the note.
+            </remarks>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.ErrorNumbers">
+            <summary>
+            Defines standard error number constants used throughout the application for error handling and responses.
+            </summary>
+            <remarks>
+            These constants are used in ErrorResponse objects to provide structured error codes that clients can use
+            to identify and handle specific error conditions programmatically.
+            </remarks>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.ErrorNumbers.Unknown">
+            <summary>
+            Represents an unknown or unspecified error.
+            </summary>
+            <remarks>
+            Use this value when an error occurs that doesn't fit into any of the defined error categories.
+            Value: 0
+            </remarks>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.ErrorNumbers.Success">
+            <summary>
+            Represents a successful operation with no errors.
+            </summary>
+            <remarks>
+            This is typically used to indicate that a request was processed successfully.
+            Value: 1
+            </remarks>
+        </member>
+        <member name="F:HW1NoteKeeperSolution.ErrorNumbers.MustNotBeNull">
+            <summary>
+            Represents an error where a required field or input is null.
+            </summary>
+            <remarks>
+            Use this when validation detects that a required property or parameter is missing or null.
+            Value: 2
+            </remarks>
         </member>
         <member name="T:HW1NoteKeeperSolution.ErrorResponse">
             <summary>
@@ -31,6 +327,87 @@
             <summary>
             The name of the property involved in the air  
             </summary>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.Program">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Program.Main(System.String[])">
+            <summary>
+            The main entry point for the application that configures and runs the web host.
+            </summary>
+            <param name="args">Command line arguments passed to the application.</param>
+        </member>
+        <member name="M:HW1NoteKeeperSolution.Program.RegisterOpenAIClient(Microsoft.AspNetCore.Builder.WebApplicationBuilder,System.Uri,Azure.AzureKeyCredential,System.String)">
+            <summary>
+            Registers the OpenAI client with the specified parameters.
+            </summary>
+            <param name="builder">The web application builder.</param>
+            <param name="openAIServiceEndpointUri">The OpenAI service endpoint URI.</param>
+            <param name="apiKeyCredential">The API key credential.</param>
+            <param name="deploymentName">The deployment name.</param>
+        </member>
+        <member name="T:HW1NoteKeeperSolution.Settings.AISettings">
+            <summary>
+            Contains settings for AI service configuration.
+            </summary>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Settings.AISettings.DeploymentUri">
+            <summary>
+            Gets or sets the deployment URI for the Azure OpenAI service.
+            </summary>
+            <remarks>
+            This is the endpoint URL where the AI model is deployed.
+            Example: https://your-resource.openai.azure.com/
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Settings.AISettings.ApiKey">
+            <summary>
+            Gets or sets the API key for authenticating with the Azure OpenAI service.
+            </summary>
+            <remarks>
+            This key should be kept secure and not exposed in version control.
+            It is typically stored in environment variables or secure configuration.
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Settings.AISettings.DeploymentModelName">
+            <summary>
+            Gets or sets the name of the deployed model.
+            </summary>
+            <remarks>
+            This is the deployment name in Azure OpenAI, not the model family.
+            Default value is "gpt-5-mini".
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Settings.AISettings.Temperature">
+            <summary>
+            Gets or sets the temperature parameter for controlling response randomness.
+            </summary>
+            <remarks>
+            Valid range is 0 to 2. Lower values (closer to 0) make responses more deterministic,
+            while higher values make responses more random and creative.
+            Default value is 1.0f (neutral randomness).
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Settings.AISettings.TopP">
+            <summary>
+            Gets or sets the Top P (nucleus sampling) parameter for controlling response diversity.
+            </summary>
+            <remarks>
+            Valid range is 0 to 1. Lower values make responses more focused on likely outputs,
+            while higher values increase diversity by considering less likely options.
+            Default value is 1.0f (include all tokens).
+            </remarks>
+        </member>
+        <member name="P:HW1NoteKeeperSolution.Settings.AISettings.MaxOutputTokens">
+            <summary>
+            Gets or sets the maximum number of tokens in the AI response.
+            </summary>
+            <remarks>
+            This limits the length of the generated response. Each token is approximately 4 characters.
+            Default value is 5500 tokens.
+            </remarks>
         </member>
         <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
             <summary>
