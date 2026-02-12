@@ -5,9 +5,6 @@ my GET is not getting the noteId, only this, why? { "summary": "string", "detail
 
 I made some modifidations and now I get noteId but is null
 
-
-
-
 _note[id].ModifiedDateUtc = DateTime.UtcNow;
 this should run only if Summary of Details are changed, how do you implement conditionals?
 
@@ -54,3 +51,9 @@ dont' forget about Demo02SystemPromptToProvideContext
 # Adding comments
 add comments to NoteCreate.cs
 add comments to Note.cs
+etc...
+
+# For testing
+Create a set of integration tests in a new .NET 10 xUnit project called NoteKeeperIntegrationTestsVSCode that test all the REST endpoints in the  #class:'HW1NoteKeeperSolution.Controllers.NotesController.cs':
+
+it seems you have created only the positive test, but on the positive test you need to ensure that CreatedDateUtc and ModifiedDateUtc are also validated meaning they are present when they should be and have a correct relationship with each other. If the note has been modified, then the modified date should always be greater in time than the created date. Also, I need you to create the negative test as well. 

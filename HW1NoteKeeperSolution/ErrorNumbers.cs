@@ -32,8 +32,8 @@
         /// </summary>
         /// <remarks>
         /// Use this when validation detects that a required property or parameter is missing or null.
-        /// Value: 2
+        /// Value: 400
         /// </remarks>
-        public const int MustNotBeNull = 2;
+        public const int MustNotBeNull = 400;
     }
 }
