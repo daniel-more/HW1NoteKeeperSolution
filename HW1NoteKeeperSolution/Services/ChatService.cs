@@ -7,15 +7,28 @@ using System.Net.Mime;
 using System.Text.Json;
 using NJsonSchema;
 
+/// <summary>
+/// Interface for chat services that process messages and return AI-generated keywords.
+/// </summary>
 public interface IChatService
 {
+    /// <summary>
+    /// Processes a user message and returns a list of important keywords extracted by AI.
+    /// </summary>
+    /// <param name="message">The user input message to analyze.</param>
+    /// <returns>A list of keywords extracted from the message.</returns>
     Task<List<string>> ProcessMessage(string message);
-
 }
+
+/// <summary>
+/// ChatService interacts with an AI model to extract keywords from user input.
+/// Uses Azure OpenAI and custom settings for prompt configuration.
+/// </summary>
 public class ChatService : IChatService
-
-
 {
+    /// <summary>
+    /// Response model for key phrases returned by the AI.
+    /// </summary>
     public class KeyPhrasesResponse
     {
         public List<string> Phrases { get; set; } = [];
@@ -25,8 +38,12 @@ public class ChatService : IChatService
     private readonly IChatClient _chatClient;
     private readonly AISettings _aISettings;
 
-
-
+    /// <summary>
+    /// Constructs a ChatService with required dependencies.
+    /// </summary>
+    /// <param name="logger">Logger for diagnostic output.</param>
+    /// <param name="chatClient">AI chat client for message processing.</param>
+    /// <param name="aISettings">Settings for AI prompt configuration.</param>
     public ChatService(ILogger<ChatService> logger, IChatClient chatClient, AISettings aISettings)
     {
         _logger = logger;
@@ -34,15 +51,17 @@ public class ChatService : IChatService
         _aISettings = aISettings;
     }
 
-
+    /// <summary>
+    /// Sends a user message to the AI model and extracts keywords from the response.
+    /// </summary>
+    /// <param name="message">The user input message to analyze.</param>
+    /// <returns>A list of keywords extracted from the message.</returns>
     public async Task<List<string>> ProcessMessage(string message)
     {
         // Add a Json schema for the output prompt
         JsonSchema schema = JsonSchema.FromType<KeyPhrasesResponse>();
         string jsonSchemaString = schema.ToJson();
-
         JsonElement jsonSchemaElement = JsonDocument.Parse(jsonSchemaString).RootElement;
-
         ChatResponseFormatJson chatResponseFormatJson = ChatResponseFormat.ForJsonSchema(jsonSchemaElement, "ChatResponse", "Chat response schema");
 
         // Create chat options using settings from AISettings
@@ -77,6 +96,7 @@ public class ChatService : IChatService
             _logger.LogWarning("Failed to parse JSON response from AI model");
         }
 
+        // Return an empty list if parsing fails
         return [];
     }
 }
