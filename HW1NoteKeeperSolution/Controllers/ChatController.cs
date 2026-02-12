@@ -10,6 +10,9 @@ using NJsonSchema;
 
 namespace HW1NoteKeeperSolution.Controllers
 {
+    /// <summary>
+    /// Handles chat-related API requests.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class ChatController : ControllerBase
@@ -19,6 +22,9 @@ namespace HW1NoteKeeperSolution.Controllers
         /// </summary>
         public class KeyPhrasesResponse
         {
+            /// <summary>
+            /// Gets or sets the list of key phrases extracted by the AI.
+            /// </summary>
             public List<string> Phrases { get; set; } = [];
         }
 
